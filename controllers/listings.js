@@ -123,7 +123,7 @@ module.exports.delete = async (req,res)=>{
 module.exports.checkAvailability = async (req, res) => {
     try {
         const { id } = req.params;
-        console.log(typeof id)
+        // console.log(typeof id)
         const { checkIn, checkOut } = req.body;
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({
@@ -162,10 +162,10 @@ module.exports.checkAvailability = async (req, res) => {
         });
 
         const isAvailable = conflictingBooking.length === 0;
-        console.log(typeof listingId)
-        console.log("Request:", requestedCheckIn, requestedCheckOut);
-        console.log("Conflicts:", conflictingBooking);
-        console.log("Requested:", requestedCheckIn.toISOString(), requestedCheckOut.toISOString());
+        // console.log(typeof listingId)
+        // console.log("Request:", requestedCheckIn, requestedCheckOut);
+        // console.log("Conflicts:", conflictingBooking);
+        // console.log("Requested:", requestedCheckIn.toISOString(), requestedCheckOut.toISOString());
 
         const list=await Listing.findById(id)
         .populate({
