@@ -1,0 +1,29 @@
+<% layout('layouts/boilerplate') %>
+<h2 class="p-2 text-center">My Listings</h2>
+<div class="row">
+  <% listings.forEach(listing => { %>
+    <div class="col-md-6 col-lg-2 mb-4">
+      <a href="/listings/<%= listing._id %>" class="text-decoration-none text-dark">
+        <div class="card h-100 shadow-sm">
+          <div class="position-relative">
+            <!-- Image -->
+            <img 
+              src="<%= listing.image.url %>" 
+              class="card-img-top" 
+              style="height: 200px; object-fit: cover;"
+              alt="Listing image"
+            >
+            <!-- Badge on top-right -->
+            <span class="badge bg-primary position-absolute top-0 end-0 m-2">
+              ₹<%= listing.price %>
+            </span>
+          </div>
+          <div class="card-body small d-flex flex-column p-2">
+            <h6 class="card-title fw-semibold"><%= listing.title %></h6>
+            <p class="card-text text-truncate"><%= listing.description %></p>
+          </div>
+        </div>
+      </a>
+    </div>
+  <% }) %>
+</div>

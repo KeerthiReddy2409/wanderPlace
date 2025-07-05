@@ -1,0 +1,148 @@
+<% layout('layouts/boilerplate') %>
+
+<div class="container my-5">
+  <div class="row">
+    <!-- Profile Card -->
+    <div class="col-md-4">
+      <div class="card shadow-sm text-center p-3">
+  <div class="rounded-circle bg-light mx-auto mb-3 d-flex align-items-center justify-content-center" 
+       style="width: 120px; height: 120px; font-size: 3rem;">
+    <i class="fas fa-user text-secondary"></i>
+  </div>
+  <h4><%= user.username %></h4>
+  <p class="text-muted small"><%= user.email %></p>
+</div>
+
+    </div>
+
+    <!-- Listings and Bookings -->
+    <div class="col-md-8">
+      <ul class="nav nav-tabs" id="profileTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="listings-tab" data-bs-toggle="tab" data-bs-target="#listings" type="button" role="tab">
+            My Listings
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="bookings-tab" data-bs-toggle="tab" data-bs-target="#bookings" type="button" role="tab">
+            My Bookings
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+    <button class="nav-link" id="wishlist-tab" data-bs-toggle="tab" data-bs-target="#wishlist" type="button" role="tab">Wishlist</button>
+  </li>
+      </ul>
+      <div class="tab-content mt-3" id="profileTabsContent">
+ <!-- Listings Tab -->
+<div class="tab-pane fade show active" id="listings" role="tabpanel">
+  <% if (listings.length === 0) { %>
+    <p class="text-muted small">You haven’t created any listings yet.</p>
+  <% } else { %>
+    <div class="row">
+      <% listings.forEach(listing => { %>
+        <div class="col-md-6 col-lg-4 mb-4">
+          <a href="/listings/<%= listing._id %>" class="text-decoration-none text-dark">
+            <div class="card h-100 shadow-sm">
+              <div class="position-relative">
+                <!-- Image -->
+                <img 
+                  src="<%= listing.image.url %>" 
+                  class="card-img-top" 
+                  style="height: 200px; object-fit: cover;"
+                  alt="Listing image"
+                >
+                <!-- Badge -->
+                <span class="badge bg-primary position-absolute top-0 end-0 m-2">
+                  ₹<%= listing.price %>
+                </span>
+              </div>
+              <div class="card-body small d-flex flex-column p-2">
+                <h6 class="card-title fw-semibold"><%= listing.title %></h6>
+                <p class="card-text text-truncate"><%= listing.description %></p>
+              </div>
+            </div>
+          </a>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+</div>
+
+ <!-- Bookings Tab -->
+<div class="tab-pane fade" id="bookings" role="tabpanel">
+  <% if (bookings.length === 0) { %>
+    <p class="text-muted small">You haven’t booked any stays yet.</p>
+  <% } else { %>
+    <div class="row">
+      <% bookings.forEach(booking => { %>
+        <div class="col-md-6 col-lg-4 mb-4">
+          <a href="/listings/<%= booking.listing._id %>" class="text-decoration-none text-dark">
+            <div class="card h-100 shadow-sm">
+              <div class="position-relative">
+                <!-- Fixed-height Image -->
+                <img 
+                  src="<%= booking.listing.image.url %>" 
+                  class="card-img-top" 
+                  style="height: 200px; object-fit: cover;" 
+                  alt="Booking image"
+                >
+                <!-- Payment Status Badge -->
+                <span class="badge bg-<%= booking.paymentStatus === 'paid' ? 'success' : 'warning' %> position-absolute top-0 end-0 m-2 text-uppercase">
+                  <%= booking.paymentStatus %>
+                </span>
+              </div>
+              <div class="card-body small d-flex flex-column">
+                <h6 class="card-title fw-semibold"><%= booking.listing.title %></h6>
+                <p class="mb-1"><strong>Check-in:</strong> <%= booking.checkIn.toDateString() %></p>
+                <p class="mb-1"><strong>Check-out:</strong> <%= booking.checkOut.toDateString() %></p>
+                <p class="mb-1"><strong>Guests:</strong> <%= booking.guestCount %></p>
+              </div>
+            </div>
+          </a>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+</div>
+
+<div class="tab-pane fade" id="wishlist" role="tabpanel" aria-labelledby="wishlist-tab">
+    <% if (user.wishlist.length === 0) { %>
+      <p class="text-muted small">You haven’t added anything to your wishlist yet.</p>
+    <% } else { %>
+      <div class="row">
+        <% user.wishlist.forEach(listing => { %>
+          <div class="col-md-6 col-lg-4 mb-4">
+            <a href="/listings/<%= listing._id %>" class="text-decoration-none text-dark">
+              <div class="card h-100 shadow-sm">
+                <img 
+                  src="<%= listing.image.url %>" 
+                  class="card-img-top" 
+                  style="height: 200px; object-fit: cover;" 
+                  alt="Listing"
+                >
+                <div class="card-body small p-2">
+                  <h6 class="card-title fw-semibold"><%= listing.title %></h6>
+                  <p class="text-muted mb-0">&#8377;<%= listing.price.toLocaleString("en-IN") %> / night</p>
+                </div>
+              </div>
+            </a>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const hash = window.location.hash;
+  if (hash) {
+    const tab = document.querySelector(`button[data-bs-target="${hash}"]`);
+    if (tab) tab.click();
+  }
+</script>
+

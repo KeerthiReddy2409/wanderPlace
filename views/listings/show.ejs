@@ -1,0 +1,168 @@
+<% layout('/layouts/boilerplate') %>
+
+<div class="container my-4">
+
+  <!-- Listing Title -->
+  <div class="row">
+    <div class="col-lg-10 offset-lg-1">
+      <h3 class="mb-3">Listing Details</h3>
+    </div>
+  </div>
+
+  <!-- Listing Card -->
+  <div class="row">
+  <div class="col-lg-10 offset-lg-1">
+    <div class="card shadow-sm flex-md-row align-items-center" style="max-height: 300px; overflow: hidden;">
+      <div class="col-md-5 p-3">
+        <img src="<%= list.image.url %>" class="img-fluid rounded" style="max-height: 250px; object-fit: cover;" alt="Listing Image">
+      </div>
+      <div class="card-body col-md-7 p-3">
+        <h5 class="card-title mb-2"><%= list.title %></h5>
+        <p class="text-muted mb-1">By <b><%= list.owner.username %></b></p>
+        <p class="mb-2"><%= list.description %></p>
+        <p class="fw-semibold mb-1">&#8377; <%= list.price?.toLocaleString("en-IN") || "N/A" %></p>
+        <p class="text-secondary mb-0"><i class="fa-solid fa-location-dot me-1"></i><%= list.location %>, <%= list.country %></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <% if (currUser && currUser._id.toString() === list.owner._id.toString()) { %>
+    <!-- Edit/Delete Buttons -->
+  <div class="row mt-3">
+    <div class="col-lg-10 offset-lg-1 d-flex gap-2">
+      <a href="/listings/<%= list._id %>/edit" class="btn btn-outline-dark">Edit</a>
+      <form method="POST" action="/listings/<%= list._id %>?_method=DELETE">
+        <button class="btn btn-danger">Delete</button>
+      </form>
+    </div>
+  </div>
+  <%}%>
+
+  <!--booking section -->
+  <div class="row mt-3">
+  <div class="col-lg-10 offset-lg-1">
+    <form method="POST" action="/listings/<%= list._id %>/checkAvailability">
+      <div class="row g-2 align-items-end">
+
+        <div class="col-md-4">
+          <label for="checkIn" class="form-label">Check-In</label>
+          <input
+            name="checkIn"
+            type="date"
+            class="form-control"
+            id="checkIn"
+            required
+          >
+        </div>
+
+        <div class="col-md-4">
+          <label for="checkOut" class="form-label">Check-Out</label>
+          <input
+            name="checkOut"
+            type="date"
+            class="form-control"
+            id="checkOut"
+            required
+          >
+        </div>
+
+        <div class="col-md-4 d-grid">
+          <label class="form-label d-block invisible">Check</label>
+          <button class="btn btn-danger" type="submit">Check Availability</button>
+        </div>
+
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-10 offset-lg-1">
+    <% if (typeof availability !== 'undefined') { %>
+  <div class="row mt-3">
+    <div class="col-lg-10 offset-lg-1">
+      <div class="p-3 rounded text-center fw-bold"
+           style="background-color: <%= availability === 'available' ? '#d4edda' : '#f8d7da' %>; color: <%= availability === 'available' ? '#155724' : '#721c24' %>;">
+        <% if (availability === 'available') { %>
+          ✅ The dates are available. <a href="/listings/<%= list._id %>/book" class="text-decoration-underline">Book now</a>.
+        <% } else { %>
+          ❌ These dates are not available. Please choose another range.
+        <% } %>
+      </div>
+    </div>
+  </div>
+<% } %>
+  </div>
+</div>
+
+  <hr class="my-4">
+
+  <!-- Review Form -->
+   <%if (currUser){%>
+    <div class="row">
+    <div class="col-lg-10 offset-lg-1">
+      <h4>Leave a Review</h4>
+      <form method="POST" action="/listings/<%= list._id %>/reviews" class="needs-validation" novalidate>
+        <div class="mb-3">
+          <label for="rating" class="form-label">Rating</label>
+          <!-- <input type="range" class="form-range" min="1" max="5" id="rating" name="review[rating]"> -->
+        <fieldset class="starability-slot">
+          <!-- <legend>First rating:</legend> -->
+          <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked aria-label="No rating." />
+          <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+          <label for="first-rate1" title="Terrible">1 star</label>
+          <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+          <label for="first-rate2" title="Not good">2 stars</label>
+          <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+          <label for="first-rate3" title="Average">3 stars</label>
+          <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+          <label for="first-rate4" title="Very good">4 stars</label>
+          <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+          <label for="first-rate5" title="Amazing">5 stars</label>
+        </fieldset>
+        </div>
+
+        <div class="mb-3">
+          <label for="comment" class="form-label">Comment</label>
+          <textarea name="review[comment]" required class="form-control" id="comment" rows="4" placeholder="Write your thoughts..."></textarea>
+          <div class="invalid-feedback">Please enter a comment.</div>
+        </div>
+        <button class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+  </div>
+   <%}%>
+  
+
+  <!-- All Reviews -->
+  <div class="row mt-5">
+    <div class="col-lg-10 offset-lg-1">
+      <h4>All Reviews</h4>
+      <div class="row row-cols-1 row-cols-md-2 g-4">
+        <% for (let review of list.reviews) { %>
+          <div class="col">
+            <div class="card h-90 shadow-sm">
+              <div class="card-body m-4">
+                <h5><%= review.author.username %></h5>
+                <p class="starability-result card-text" data-rating="<%= review.rating %>"></p>
+                <p class="mb-2"><%= review.comment %></p>
+                </p>
+                <!-- <p class="text-warning mb-2">
+                  <% for (let i = 1; i <= review.rating; i++) { %>⭐<% } %>
+                </p> -->
+                <% if (currUser && review.author && review.author._id.toString() === currUser._id.toString()) { %>
+                  <form method="POST" action="/listings/<%= list._id %>/reviews/<%= review._id %>?_method=DELETE">
+                  <button class="btn btn-sm btn-outline-danger">Delete</button>
+                </form>
+                <% } %>
+                
+              </div>
+            </div>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+</div>

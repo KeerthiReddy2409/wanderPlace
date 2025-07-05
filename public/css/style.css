@@ -1,0 +1,189 @@
+/* Updated CSS with Modern Airbnb-style Color Theme */
+
+/* Base layout setup */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Poppins", serif !important;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+.main-content {
+    flex: 1;
+}
+
+/* Navbar */
+.navbar {
+    height: 5rem;
+    background-color: #ffffff !important;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.fa-compass {
+    color: #FF5A5F !important;
+    font-size: 2rem;
+}
+
+.nav-link {
+    color: #333 !important;
+    font-weight: 500;
+}
+
+.nav-link:hover {
+    color: #FF5A5F !important;
+}
+
+/* Footer */
+.f-info {
+    display: flex;
+    min-height: 8rem;
+    background-color: #f0f0f0;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    text-align: center;
+    margin-top: auto;
+    color: #555;
+}
+
+.f-info-links a {
+    text-decoration: none;
+    color: #333;
+}
+
+.f-info-links a:hover {
+    text-decoration: underline;
+    color: #FF5A5F;
+}
+
+.f-info-links {
+    width: 100%;
+}
+
+.f-info-socials {
+    width: 100%;
+    font-size: 1.3rem;
+}
+
+.f-info-socials i {
+    margin-right: 1rem;
+}
+
+/* Cards */
+.card {
+    border-radius: 12px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: none !important;
+    background-color: #fff;
+}
+
+.card:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    transform: translateY(-4px);
+}
+
+.card-img-top {
+    border-radius: 1rem !important;
+    width: 100% !important;
+    object-fit: cover !important;
+}
+
+.card-body {
+    padding: 0.75rem 1rem !important;
+}
+
+.card-text p {
+    font-weight: 400 !important;
+}
+
+.card-img-overlay {
+    opacity: 0;
+}
+
+.card-img-overlay:hover {
+    opacity: 0.2;
+    background-color: white;
+}
+
+.card-title {
+    margin-bottom: 1rem;
+}
+
+/* Buttons */
+.add-btn {
+    background-color: #FF5A5F !important;
+    color: white;
+    border: none;
+}
+
+.add-btn:hover {
+    background-color: #e6494f !important;
+}
+
+/* Form */
+.form-control {
+    color: #7b7878 !important;
+}
+
+/* Show page */
+.show-img {
+    width: 100%;
+    height: 50vh;
+    object-fit: cover;
+}
+
+.show-card {
+    padding: 0;
+    border: none;
+    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15) !important;
+}
+
+.show-card .card-body {
+    padding: 2.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.show-card .col-md-6.p-0 {
+    display: flex;
+    align-items: stretch;
+}
+
+.show-card .card-body p.card-text {
+    margin-bottom: 0.75rem;
+}
+
+/* Wishlist */
+.wishlist-btn {
+    background-color: white !important;
+    border: 1px solid #ddd !important;
+}
+
+.fa-heart.text-danger {
+    color: #FF5A5F !important;
+}
+
+/* Bootstrap badge override */
+.badge.bg-primary {
+    background-color: #FF5A5F !important;
+}
+
+/* Flash messages */
+.alert-success {
+    background-color: #dff0d8;
+    color: #3c763d;
+}
+
+.alert-danger {
+    background-color: #f2dede;
+    color: #a94442;
+}

@@ -1,0 +1,45 @@
+<% layout('/layouts/boilerplate') %>
+
+<div class="container">
+  <h5 class="fw-semibold">Explore Homes in India</h5>
+
+  <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-3">
+    <% for (let listing of allListings) { %>
+      <div class="col">
+        <div class="card border-0 shadow-sm" style="border-radius: 10px;">
+          <div class="position-relative">
+            <!-- Listing Image -->
+            <a href="/listings/<%= listing._id %>">
+              <img 
+                src="<%= listing.image.url %>" 
+                alt="Listing Image" 
+                class="card-img-top" 
+                style="height: 120px; object-fit: cover; border-top-left-radius: 10px; border-top-right-radius: 10px;"
+              >
+            </a>
+
+            <% if (currUser) { %>
+              <!-- Heart Button -->
+              <button 
+                type="button"
+                class="wishlist-btn position-absolute top-0 end-0 m-2 btn btn-sm bg-white rounded-circle shadow"
+                data-id="<%= listing._id %>"
+                style="z-index: 10;"
+              >
+                <i class="<%= currUser.wishlist.includes(listing._id) ? 'fas' : 'far' %> fa-heart text-danger"></i>
+              </button>
+            <% } %>
+          </div>
+
+          <!-- Card Body (Clickable too, optional) -->
+          <a href="/listings/<%= listing._id %>" class="text-decoration-none text-dark">
+            <div class="card-body p-2">
+              <p class="card-title fw-semibold mb-1 small text-truncate"><%= listing.title %></p>
+              <p class="card-text text-muted small mb-0">&#8377;<%= listing.price.toLocaleString("en-IN") %> / 2 nights</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    <% } %>
+  </div>
+</div>

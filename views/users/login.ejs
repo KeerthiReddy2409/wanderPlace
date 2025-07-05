@@ -1,0 +1,58 @@
+<% layout('/layouts/boilerplate') %>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+      <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-body p-4">
+          <h3 class="card-title mb-4 text-center">Log In to Your Account</h3>
+          <form action="/login" method="POST" novalidate class="needs-validation">
+
+            <!-- Username -->
+            <div class="mb-3">
+              <label for="username" class="form-label">Username</label>
+              <input
+                type="text"
+                class="form-control"
+                id="username"
+                name="username"
+                placeholder="Enter your username"
+                required
+              >
+              <div class="invalid-feedback">Please enter a valid username.</div>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                name="password"
+                placeholder="Enter your password"
+                required
+              >
+              <div class="invalid-feedback">Please enter a valid password.</div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="d-grid mb-3">
+              <button type="submit" class="btn btn-success">Log In</button>
+            </div>
+
+            <!-- Divider -->
+            <div class="text-center my-2 text-muted">or</div>
+
+            <!-- Google Login -->
+            <div class="d-grid">
+              <a href="/auth/google/login" class="btn btn-outline-danger">
+                <i class="bi bi-google me-2"></i> Log In with Google
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

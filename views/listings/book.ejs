@@ -1,0 +1,125 @@
+<% layout('/layouts/boilerplate') %>
+
+<div class="container my-4">
+  <div class="row">
+    <div class="col-lg-10 offset-lg-1">
+
+      <h3 class="mb-4">Book: <%= listing.title %></h3>
+
+      <form id="booking-form">
+  <div class="row g-3">
+    <!-- Check-In -->
+    <div class="col-md-6">
+      <label for="checkIn" class="form-label">Check-In Date</label>
+      <input type="date" class="form-control" id="checkIn" name="checkIn"
+        value="<%= checkIn ? checkIn.toISOString().split('T')[0] : '' %>" required>
+    </div>
+
+    <!-- Check-Out -->
+    <div class="col-md-6">
+      <label for="checkOut" class="form-label">Check-Out Date</label>
+      <input type="date" class="form-control" id="checkOut" name="checkOut"
+        value="<%= checkOut ? checkOut.toISOString().split('T')[0] : '' %>" required>
+    </div>
+  </div>
+
+  <!-- Guest Count -->
+  <div class="my-3">
+    <label for="guestCount" class="form-label d-block">Number of Guests</label>
+    <div class="input-group" style="max-width: 200px;">
+      <button type="button" class="btn btn-outline-secondary" onclick="adjustGuestCount(-1)">−</button>
+      <input type="text" class="form-control text-center" id="guestCount" name="guestCount" value="1" readonly>
+      <button type="button" class="btn btn-outline-secondary" onclick="adjustGuestCount(1)">+</button>
+    </div>
+  </div>
+
+  <!-- Special Requests -->
+  <div class="mb-3">
+    <label for="specialRequests" class="form-label">Special Requests (optional)</label>
+    <textarea class="form-control" id="specialRequests" name="specialRequests" rows="3"
+      placeholder="e.g., Need a baby cot, early check-in..."></textarea>
+  </div>
+
+  <!-- Pay & Confirm Button -->
+  <button type="button" class="btn btn-primary" onclick="payWithRazorpay(event)">Pay & Confirm Booking</button>
+</form>
+
+
+    </div>
+  </div>
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  function adjustGuestCount(change) {
+    const input = document.getElementById("guestCount");
+    let value = parseInt(input.value);
+    value = Math.max(1, value + change);
+    input.value = value;
+  }
+
+  async function payWithRazorpay(e) {
+    e.preventDefault();
+
+    const checkIn = document.getElementById("checkIn").value;
+    const checkOut = document.getElementById("checkOut").value;
+    const guestCount = document.getElementById("guestCount").value;
+    const specialRequests = document.getElementById("specialRequests").value;
+
+    const pricePerNight = <%= listing.price %>;
+    const inDate = new Date(checkIn);
+    const outDate = new Date(checkOut);
+    const nights = Math.max(1, (outDate - inDate) / (1000 * 60 * 60 * 24));
+    const totalPrice = pricePerNight * nights;
+
+    // 1. Create Razorpay Order (backend will give order_id)
+    const res = await fetch("/payment/create-order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount: totalPrice })
+    });
+
+    const { orderId } = await res.json();
+
+    // 2. Open Razorpay popup
+    const options = {
+      key: "<%= razorpay_key %>", // injected from server
+      amount: totalPrice * 100,
+      currency: "INR",
+      name: "WonderPlace",
+      description: "Booking Payment",
+      order_id: orderId,
+      handler: function (response) {
+        // 3. After successful payment, submit form with data
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = "/listings/<%= listing._id %>/book";
+
+        const fields = {
+          checkIn,
+          checkOut,
+          guestCount,
+          specialRequests,
+          totalPrice,
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_signature: response.razorpay_signature
+        };
+
+        for (const key in fields) {
+          const input = document.createElement("input");
+          input.type = "hidden";
+          input.name = key;
+          input.value = fields[key];
+          form.appendChild(input);
+        }
+
+        document.body.appendChild(form);
+        form.submit();
+      }
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.open();
+  }
+</script>
