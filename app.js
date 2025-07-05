@@ -144,6 +144,9 @@ app.use((req, res, next) => {
     console.log('🧭 Incoming request path:', req.path);
     next();
 });
+app.get('/', (req, res) => {
+  res.redirect('/listings');
+});
 
 app.use('/listings', listings)
 
